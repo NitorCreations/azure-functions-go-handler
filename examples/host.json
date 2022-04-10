@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "default": "Trace"
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[3.3.0, 4.0.0)"
+  },
+  "customHandler": {
+    "description": {
+      "defaultExecutablePath": "handler",
+      "workingDirectory": "",
+      "arguments": []
+    }
+  }
+}
