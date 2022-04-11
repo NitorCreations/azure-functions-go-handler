@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
+// Shotcut for map[string][]string
 type HttpRequestHeaders map[string][]string
 
+// HttpRequest models the HttpTrigger request object.
 type HttpRequest struct {
 	Url        string
 	Method     string
@@ -27,10 +29,13 @@ type HttpRequest struct {
 	}
 }
 
+// Parse JSON encoded request body data.
+// Argument handled in the manner of json.Unmarshal.
 func (h *HttpRequest) BodyJSON(v any) error {
 	return json.Unmarshal([]byte(h.Body), v)
 }
 
+// IsJson checks if the request body is JSON encoded.
 func (h *HttpRequest) IsJSON() bool {
 	if val, ok := h.Headers["Content-Type"]; ok {
 		for _, ct := range val {
@@ -42,26 +47,34 @@ func (h *HttpRequest) IsJSON() bool {
 	return false
 }
 
+// Shotcut for map[string][]string
 type HttpResponseHeaders map[string][]string
 
+// ContentType sets the HttpResponseHeaders content type.
 func (h *HttpResponseHeaders) ContentType(val string) *HttpResponseHeaders {
 	(*h)["Content-Type"] = []string{val}
 	return h
 }
 
+// Shortcut for ContentType("application/json")
 func (h *HttpResponseHeaders) ContentTypeJson() *HttpResponseHeaders {
 	return h.ContentType("application/json")
 }
 
+// Shortcut for ContentType("text/plain")
 func (h *HttpResponseHeaders) ContentTypeText() *HttpResponseHeaders {
 	return h.ContentType("text/plain")
 }
 
 var (
+	// HttpResponseHeaders with content type set to application/json
 	ContentTypeJson HttpResponseHeaders = *(&HttpResponseHeaders{}).ContentTypeJson()
+	// HttpResponseHeaders with content type set to text/plain
 	ContentTypeText HttpResponseHeaders = *(&HttpResponseHeaders{}).ContentTypeText()
 )
 
+// HttpResponse models the HttpTrigger out binding data.
+// All fields are optional. The default value for Status is 200.
 type HttpResponse struct {
 	Status  uint32
 	Body    interface{}
