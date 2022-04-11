@@ -10,7 +10,6 @@ var (
 	ErrUnknownProperty = errors.New("unknown property")
 )
 
-
 func parse[V any](src RawData, path string) (V, error) {
 	var res V
 	data := src

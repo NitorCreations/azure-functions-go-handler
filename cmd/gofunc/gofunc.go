@@ -14,7 +14,8 @@ import (
 )
 
 func init() {
-	gofunc.LoadTemplates()
+	err := gofunc.LoadTemplates()
+	gofunc.ExitIf(err)
 }
 
 func help() {
@@ -89,7 +90,7 @@ func generate(args []string) {
 	vars := gofunc.NewHandlerVars()
 	modName := gofunc.GetModName()
 
-	filepath.Walk(wd, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(wd, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
 			return filepath.SkipDir
 		}
@@ -121,6 +122,8 @@ func generate(args []string) {
 		}
 		return nil
 	})
+	
+	gofunc.ExitIf(err)
 
 	// generate handler
 	path, err := gofunc.CreateHandler(wd, vars)

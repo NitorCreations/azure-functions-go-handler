@@ -8,7 +8,8 @@ import (
 func parseInvokeRequest(req *http.Request) *InvokeRequest {
 	var invokeRequest InvokeRequest
 	d := json.NewDecoder(req.Body)
-	d.Decode(&invokeRequest)
+	err := d.Decode(&invokeRequest)
+	panicIf(err, "Failed to parse invode request")
 	return &invokeRequest
 }
 
