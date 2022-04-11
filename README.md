@@ -85,7 +85,6 @@ To skip the function completely in generation set the `excluded` property to `tr
 
 - Documentation
 - Release automation, simple tests
-- Better support for the HTTP trigger
 - Better support for other types of triggers
 - ...
 
