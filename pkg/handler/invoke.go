@@ -12,8 +12,8 @@ func parseInvokeRequest(req *http.Request) *InvokeRequest {
 	return &invokeRequest
 }
 
-func (i *InvokeRequest) sys() (*System, error) {
-	var sys System
+func (i *InvokeRequest) sys() (*system, error) {
+	var sys system
 	err := json.Unmarshal(i.Metadata["sys"], &sys)
 	return &sys, err
 }

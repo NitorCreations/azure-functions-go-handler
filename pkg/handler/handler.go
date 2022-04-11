@@ -12,6 +12,15 @@ import (
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 )
 
+// Invocation system metadata
+type system struct {
+	MethodName string
+	UtcNow     string
+	RandGuid   string
+}
+
+// Start the custom handler HTTP server. Default serve port is 8080,
+// overridable with environment variable FUNCTIONS_CUSTOMHANDLER_PORT.
 func (w *Handler) Start() error {
 	port := "8080"
 	if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
