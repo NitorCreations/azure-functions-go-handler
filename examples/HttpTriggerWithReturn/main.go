@@ -24,9 +24,10 @@ func Handle(ctx *function.Context, req *function.HttpRequest) function.HttpRespo
 	// Access raw invocation data
 	ctx.Log.Println(ctx.Metadata.String("sys.UtcNow"))
 
+	// Output can be a return value when binding name is `$return`
 	return function.HttpResponse{
 		Body: function.H{
-			"message": "Hello world",
+			"message": "Hello Gophers!",
 		},
 		Headers: function.ContentTypeJson,
 	}
