@@ -12,7 +12,7 @@ import (
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 )
 
-func (w *Handler) Start() (error) {
+func (w *Handler) Start() error {
 	port := "8080"
 	if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
 		port = val
@@ -20,7 +20,7 @@ func (w *Handler) Start() (error) {
 
 	http.HandleFunc("/", w.handle)
 	log.Printf("Handler process listening in 127.0.0.1:%s", port)
-	return http.ListenAndServe(":" + port, nil)
+	return http.ListenAndServe(":"+port, nil)
 }
 
 func (w *Handler) handle(res http.ResponseWriter, req *http.Request) {
@@ -50,21 +50,21 @@ func (w *Handler) handle(res http.ResponseWriter, req *http.Request) {
 			panicMsg("No handler found for method %s", sys.MethodName)
 		}
 
-		methodType := reflect.TypeOf(method)		
+		methodType := reflect.TypeOf(method)
 		if methodType.Kind() != reflect.Func {
-			panicMsg("Method %s not a function", sys.MethodName)		
+			panicMsg("Method %s not a function", sys.MethodName)
 		}
-		
+
 		// Handler method inputs
 		context := function.NewContext(invokeRequest.Data, invokeRequest.Metadata)
 		in := []reflect.Value{reflect.ValueOf(context)}
 
 		for i := 1; i < methodType.NumIn(); i++ {
-			inputName := reflect.ValueOf(invokeRequest.Data).MapKeys()[i-1].String()			
+			inputName := reflect.ValueOf(invokeRequest.Data).MapKeys()[i-1].String()
 			if rv, ok := invokeRequest.Data[inputName]; ok {
 				indirect := true
 				inputType := methodType.In(i)
-				
+
 				if inputType.Kind() == reflect.Pointer {
 					indirect = false
 					inputType = inputType.Elem()
@@ -81,7 +81,7 @@ func (w *Handler) handle(res http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
-		
+
 		// Invoke method
 		out := reflect.ValueOf(method).Call(in)
 
@@ -97,8 +97,8 @@ func (w *Handler) handle(res http.ResponseWriter, req *http.Request) {
 
 		// Build invoke response
 		invokeResponse := InvokeResponse{
-			Logs: context.Logs,
-			Outputs: context.Outputs,
+			Logs:        context.Logs,
+			Outputs:     context.Outputs,
 			ReturnValue: returnValue,
 		}
 

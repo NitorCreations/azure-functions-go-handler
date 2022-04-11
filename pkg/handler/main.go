@@ -6,8 +6,8 @@ import (
 
 type System struct {
 	MethodName string
-	UtcNow string
-	RandGuid string
+	UtcNow     string
+	RandGuid   string
 }
 
 type InvokeRequest struct {
@@ -22,6 +22,6 @@ type InvokeResponse struct {
 }
 
 type Handler struct {
-	Debug bool
+	Debug   bool
 	Methods map[string]interface{}
 }

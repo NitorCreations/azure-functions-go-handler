@@ -1,0 +1,15 @@
+package HttpTrigger
+
+import "github.com/NitorCreations/azure-functions-go-handler/pkg/function"
+
+//
+// Example Go HttpTrigger handler that uses return value for the response
+//
+func Handle(ctx *function.Context) function.HttpResponse {
+	return function.HttpResponse{
+		Body: function.H{
+			"message": "Hello Gopher!",
+		},
+		Headers: function.ContentTypeJson,
+	}
+}

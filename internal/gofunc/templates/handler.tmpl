@@ -4,8 +4,9 @@ package main
 import (
 	"net/http"
 
-	HttpTrigger "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTrigger"
-	HttpTriggerWithReturn "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTriggerWithReturn"
+{{- range $key, $val := .Imports }}
+	{{ $key }} "{{ $val }}"
+{{- end }}
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/handler"
 )
 
@@ -13,8 +14,9 @@ func main() {
 	handler := &handler.Handler{
 		Debug: false,
 		Methods: map[string]interface{}{
-			"HttpTrigger":           HttpTrigger.Handle,
-			"HttpTriggerWithReturn": HttpTriggerWithReturn.Handle,
+{{- range $key, $val := .Methods }}
+			"{{ $key }}": {{ $val }},
+{{- end }}
 		},
 	}
 
