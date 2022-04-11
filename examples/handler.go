@@ -2,11 +2,10 @@
 package main
 
 import (
-	"net/http"
-
 	HttpTrigger "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTrigger"
 	HttpTriggerWithReturn "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTriggerWithReturn"
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/handler"
+	"net/http"
 )
 
 func main() {

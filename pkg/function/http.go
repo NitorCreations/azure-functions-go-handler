@@ -2,27 +2,44 @@ package function
 
 import (
 	"encoding/json"
+	"strings"
 )
 
 type HttpRequestHeaders map[string][]string
 
 type HttpRequest struct {
-	Url     string
-	Method  string
-	Query   map[string]string
-	Headers HttpRequestHeaders
-	Params  map[string]string
-	// Identities []struct{
-	// 	AuthenticationType string
-	// 	IsAuthenticated    bool
-	// 	Actor              string
-	// 	BootstrapContext   string
-	// 	Claims             []string
-	// 	Label              string
-	// 	Name               string
-	// 	NameClaimType      string
-	// 	RoleClaimType      string
-	// }
+	Url        string
+	Method     string
+	Body       string
+	Query      map[string]string
+	Headers    HttpRequestHeaders
+	Params     map[string]string
+	Identities []struct {
+		AuthenticationType string
+		IsAuthenticated    bool
+		Actor              string
+		BootstrapContext   string
+		Claims             []string
+		Label              string
+		Name               string
+		NameClaimType      string
+		RoleClaimType      string
+	}
+}
+
+func (h *HttpRequest) BodyJSON(v any) error {
+	return json.Unmarshal([]byte(h.Body), v)
+}
+
+func (h *HttpRequest) IsJSON() bool {
+	if val, ok := h.Headers["Content-Type"]; ok {
+		for _, ct := range val {
+			if strings.HasPrefix(ct, "application/json") {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 type HttpResponseHeaders map[string][]string

@@ -7,6 +7,6 @@ import (
 func Handle(ctx *function.Context) {
 	ctx.Outputs["res"] = function.H{
 		"status": 200,
-		"body": "Hello world!",
+		"body":   "Hello world!",
 	}
 }
