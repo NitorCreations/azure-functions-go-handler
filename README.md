@@ -40,7 +40,7 @@ The `gofunc` Command Line Interface provides utilities to help with Go Function 
 ### Installation
 
 ```shell
-go install -i github.com/NitorCreations/azure-functions-go-handler/cmd/gofunc
+go install github.com/NitorCreations/azure-functions-go-handler/cmd/gofunc
 ```
 
 ### Synopsis
