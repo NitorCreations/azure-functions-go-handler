@@ -57,8 +57,8 @@ func (h HttpResponse) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(&struct {
-		Status  uint32    				  `json:"status"`
-		Body    interface{} 			  `json:"body"`
+		Status  uint32              `json:"status"`
+		Body    interface{}         `json:"body"`
 		Headers HttpResponseHeaders `json:"headers"`
 	}{
 		h.Status, h.Body, h.Headers,

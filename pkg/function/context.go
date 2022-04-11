@@ -16,10 +16,10 @@ func (l *Log) Println(a ...any) {
 
 func NewContext(data RawData, metadata RawData) *Context {
 	ctx := &Context{
-		Data: data,
+		Data:     data,
 		Metadata: metadata,
-		Outputs: make(map[string]interface{}),
-		Logs: []string{},
+		Outputs:  make(map[string]interface{}),
+		Logs:     []string{},
 	}
 	ctx.Log = Log{ctx: ctx}
 	return ctx
