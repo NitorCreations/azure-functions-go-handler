@@ -1,6 +1,7 @@
 # Azure Functions Go Handler
 
-![stability-wip](https://img.shields.io/badge/stability-wip-lightgrey.svg)
+[![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
+[![golangci-lint](https://github.com/NitorCreations/azure-functions-go-handler/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/NitorCreations/azure-functions-go-handler/actions/workflows/golangci-lint.yml)
 
 > Note that the project is in a very early state and breaking changes are likely to occur.
 
@@ -84,8 +85,7 @@ To skip the function completely in generation set the `excluded` property to `tr
 ## Features TODO
 
 - Documentation
-- Release automation, simple tests
-- Better support for other types of triggers
+- Simple tests
 - ...
 
 ## Lisence
