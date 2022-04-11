@@ -66,7 +66,8 @@ func initialize() {
 	if _, err := os.Stat("go.mod"); os.IsNotExist(err) {
 		var cmd *exec.Cmd
 
-		cmd = exec.Command("go", "mod", "init")
+		modName := filepath.Base(gofunc.Getmd())
+		cmd = exec.Command("go", "mod", "init", modName)
 		gofunc.ExecCmd(cmd)
 
 		cmd = exec.Command("go", "get", "-u", "github.com/NitorCreations/azure-functions-go-handler")
