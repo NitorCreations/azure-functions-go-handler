@@ -3,6 +3,7 @@ package main
 
 import (
 	_ "embed"
+	BlobStorageBindings "github.com/NitorCreations/azure-functions-go-handler/examples/BlobStorageBindings"
 	HttpTrigger "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTrigger"
 	HttpTriggerWithReturn "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTriggerWithReturn"
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
@@ -11,6 +12,8 @@ import (
 )
 
 var (
+	//go:embed BlobStorageBindings/function.json
+	BlobStorageBindingsConfig []byte
 	//go:embed HttpTrigger/function.json
 	HttpTriggerConfig []byte
 	//go:embed HttpTriggerWithReturn/function.json
@@ -20,6 +23,8 @@ var (
 var functions = make(map[string]*function.Function)
 
 func init() {
+	functions["BlobStorageBindings"] = create(
+		BlobStorageBindingsConfig, BlobStorageBindings.Handle)
 	functions["HttpTrigger"] = create(
 		HttpTriggerConfig, HttpTrigger.Handle)
 	functions["HttpTriggerWithReturn"] = create(

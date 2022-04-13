@@ -5,10 +5,5 @@ appsettings.json
 # normally this would be ignored
 # local.settings.json
 
-# Azurite artifacts
-__blobstorage__
-__queuestorage__
-__azurite_db*__.json
-
 # Golang artifacts
 handler

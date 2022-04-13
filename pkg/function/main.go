@@ -67,6 +67,7 @@ type Binding struct {
 
 type Argument struct {
 	Name      string
+	Type      reflect.Type
 	Value     reflect.Value
 	Direction Direction
 	indirect  bool

@@ -35,33 +35,44 @@ func invoke(request *InvokeRequest, fun *function.Function) *InvokeResponse {
 
 	// Handler method inputs
 	in := make([]reflect.Value, len(fun.Arguments))
+	out := []*function.Argument{}
+
 	for i, arg := range fun.Arguments {
 		if i == 0 {
 			in[i] = reflect.ValueOf(context)
 			continue
 		}
 
-		if arg.Direction != function.DirectionOut {
-			panicIf(arg.Read(request.Data),
-				"Failed to parse binding %s", arg.Name)
+		// Make an instance to hold invocation binding data
+		instance := arg.Instance()
+
+		switch arg.Direction {
+		case function.DirectionIn:
+			panicIf(instance.Read(request.Data), "Failed to parse binding %s", arg.Name)
+		case function.DirectionOut:
+			panicIf(instance.Allocate(), "Failed to allocate binding %s", arg.Name)
+			out = append(out, instance)
+		case function.DirectionInOut:
+			panicMsg("Inout direction is not supported")
+		default:
+			panicMsg("Illegal direction %s", arg.Direction)
 		}
-		in[i] = arg.Argument()
+
+		in[i] = instance.Argument()
 	}
 
 	// Invoke method
-	out := reflect.ValueOf(fun.Reference).Call(in)
+	res := reflect.ValueOf(fun.Reference).Call(in)
 
 	// Handle function outputs
-	for _, arg := range fun.Arguments {
-		if arg.Direction != function.DirectionIn {
-			arg.Write(context.Outputs)
-		}
+	for _, arg := range out {
+		arg.Write(context.Outputs)
 	}
 
 	// Handle function return value
 	var returnValue interface{} = nil
-	if len(out) > 0 {
-		v := out[0]
+	if len(res) > 0 {
+		v := res[0]
 		if v.Kind() == reflect.Pointer {
 			v = v.Elem()
 		}

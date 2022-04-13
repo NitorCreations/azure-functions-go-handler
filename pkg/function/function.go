@@ -20,18 +20,23 @@ func NewFunction(config *Config, reference any) (*Function, error) {
 	for i := 0; i < funType.NumIn(); i++ {
 		argType := funType.In(i)
 
+		var arg *Argument
+		var err error
+
 		if i == 0 {
 			if !validCtxArg(argType) {
 				return nil, ErrBadReference
 			}
-			arguments[i] = *NewArgument(
-				"_ctx", argType, DirectionIn)
-
+			arg, err = NewArgument("_ctx", argType, DirectionIn)
 		} else {
 			binding := config.Bindings[i-1]
-			arguments[i] = *NewArgument(
-				binding.Name, argType, binding.Direction)
+			arg, err = NewArgument(binding.Name, argType, binding.Direction)
 		}
+
+		if err != nil {
+			return nil, err
+		}
+		arguments[i] = *arg
 	}
 
 	return &Function{

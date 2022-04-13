@@ -1,0 +1,48 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get", "post"]
+    },
+    {
+      "name": "txtin",
+      "type": "blob",
+      "path": "example/data.txt",
+      "connection": "BlobStorageConnectionString",
+      "direction": "in",
+      "dataType": "string"
+    },
+    {
+      "name": "txtout",
+      "type": "blob",
+      "path": "example/data.txt",
+      "connection": "BlobStorageConnectionString",
+      "direction": "out",
+      "dataType": "string"
+    },
+    {
+      "name": "imgin",
+      "type": "blob",
+      "path": "example/image.png",
+      "connection": "BlobStorageConnectionString",
+      "direction": "in",
+      "dataType": "binary"
+    },
+    {
+      "name": "imgout",
+      "type": "blob",
+      "path": "example/image.png",
+      "connection": "BlobStorageConnectionString",
+      "direction": "out",
+      "dataType": "stream"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "$return"
+    }
+  ]
+}
