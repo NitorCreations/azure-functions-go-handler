@@ -4,6 +4,8 @@ package handler
 
 import (
 	"encoding/json"
+
+	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 )
 
 // InvokeRequest models the data sent by the Funtions Runtime for
@@ -24,6 +26,6 @@ type InvokeResponse struct {
 // Handler runs the custom handler HTTP server and runs the registered
 // methods upon invocation requests.
 type Handler struct {
-	Debug   bool
-	Methods map[string]interface{}
+	Debug     bool
+	Functions map[string]*function.Function
 }

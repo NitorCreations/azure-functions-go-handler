@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -85,44 +83,22 @@ func initialize() {
 func generate(args []string) {
 	fmt.Println("gofunc: generate")
 
-	md := gofunc.Getmd()
 	wd := gofunc.Getwd(args)
 	vars := gofunc.NewHandlerVars()
-	modName := gofunc.GetModName()
 
 	err := filepath.Walk(wd, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
 			return filepath.SkipDir
 		}
 		if info.Name() == "function.json" {
-			funcFile, err := os.Open(path)
-			gofunc.ExitIf(err)
-
-			defer funcFile.Close()
-
-			funcBytes, _ := ioutil.ReadAll(funcFile)
-			var funcSpec map[string]interface{}
-			gofunc.ExitIf(json.Unmarshal(funcBytes, &funcSpec))
-
-			if ex, ok := funcSpec["excluded"]; ok && ex == true {
-				return nil
+			fun := gofunc.CreateFunctionVars(wd, path)
+			if fun != nil {
+				vars.Functions = append(vars.Functions, fun)
 			}
-
-			pkgName := filepath.Dir(strings.TrimPrefix(path, md+"/"))
-
-			var funName string = "Handle"
-			if ep, ok := funcSpec["entryPoint"]; ok {
-				funName = fmt.Sprint(ep)
-			}
-
-			alias := filepath.Base(pkgName)
-
-			vars.Imports[alias] = fmt.Sprintf("%s/%s", modName, pkgName)
-			vars.Methods[alias] = fmt.Sprintf("%s.%s", alias, funName)
 		}
 		return nil
 	})
-	
+
 	gofunc.ExitIf(err)
 
 	// generate handler

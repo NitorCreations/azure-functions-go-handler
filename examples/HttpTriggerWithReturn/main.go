@@ -6,7 +6,7 @@ import (
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 )
 
-func Handle(ctx *function.Context, req *function.HttpRequest) function.HttpResponse {
+func Handle(ctx *function.Context, req *function.HttpRequest) *function.HttpResponse {
 	log.Println("Trace logs")        // you can use this for debugging implementation
 	ctx.Log.Println("Function logs") // use this for function logging
 
@@ -14,7 +14,7 @@ func Handle(ctx *function.Context, req *function.HttpRequest) function.HttpRespo
 	if req.Body != "" && req.IsJSON() {
 		data := make(function.H)
 		if err := req.BodyJSON(&data); err != nil {
-			return function.HttpResponse{
+			return &function.HttpResponse{
 				Status: 400,
 			}
 		}
@@ -25,10 +25,10 @@ func Handle(ctx *function.Context, req *function.HttpRequest) function.HttpRespo
 	ctx.Log.Println(ctx.Metadata.String("sys.UtcNow"))
 
 	// Output can be a return value when binding name is `$return`
-	return function.HttpResponse{
+	return &function.HttpResponse{
 		Body: function.H{
 			"message": "Hello Gophers!",
 		},
-		Headers: function.ContentTypeJson,
+		Headers: function.ContentTypeJson(),
 	}
 }

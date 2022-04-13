@@ -2,19 +2,46 @@
 package main
 
 import (
+	_ "embed"
 	HttpTrigger "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTrigger"
 	HttpTriggerWithReturn "github.com/NitorCreations/azure-functions-go-handler/examples/HttpTriggerWithReturn"
+	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/handler"
 	"net/http"
 )
 
+var (
+	//go:embed HttpTrigger/function.json
+	HttpTriggerConfig []byte
+	//go:embed HttpTriggerWithReturn/function.json
+	HttpTriggerWithReturnConfig []byte
+)
+
+var functions = make(map[string]*function.Function)
+
+func init() {
+	functions["HttpTrigger"] = create(
+		HttpTriggerConfig, HttpTrigger.Handle)
+	functions["HttpTriggerWithReturn"] = create(
+		HttpTriggerWithReturnConfig, HttpTriggerWithReturn.Handle)
+}
+
+func create(data []byte, ref any) *function.Function {
+	config, err := function.NewConfig(data)
+	if err != nil {
+		panic(err)
+	}
+	function, err := function.NewFunction(config, ref)
+	if err != nil {
+		panic(err)
+	}
+	return function
+}
+
 func main() {
 	handler := &handler.Handler{
-		Debug: false,
-		Methods: map[string]interface{}{
-			"HttpTrigger":           HttpTrigger.Handle,
-			"HttpTriggerWithReturn": HttpTriggerWithReturn.Handle,
-		},
+		Debug:     false,
+		Functions: functions,
 	}
 
 	err := handler.Start()

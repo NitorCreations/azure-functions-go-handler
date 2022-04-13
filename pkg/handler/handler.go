@@ -1,23 +1,12 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"reflect"
-
-	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 )
-
-// Invocation system metadata
-type system struct {
-	MethodName string
-	UtcNow     string
-	RandGuid   string
-}
 
 // Start the custom handler HTTP server. Default serve port is 8080,
 // overridable with environment variable FUNCTIONS_CUSTOMHANDLER_PORT.
@@ -49,69 +38,19 @@ func (w *Handler) handle(res http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodPost {
 		// Parse invoke request
-		invokeRequest := parseInvokeRequest(req)
-		sys, err := invokeRequest.sys()
+		request := parseInvokeRequest(req)
+		sys, err := request.sys()
 		panicIf(err, "Failed to parse invoke request")
 
 		// Resolve method
-		method, ok := w.Methods[sys.MethodName]
+		fun, ok := w.Functions[sys.MethodName]
 		if !ok {
-			panicMsg("No handler found for method %s", sys.MethodName)
+			panicMsg("No handler found for function %s", sys.MethodName)
 		}
 
-		methodType := reflect.TypeOf(method)
-		if methodType.Kind() != reflect.Func {
-			panicMsg("Method %s not a function", sys.MethodName)
-		}
-
-		// Handler method inputs
-		context := function.NewContext(invokeRequest.Data, invokeRequest.Metadata)
-		in := []reflect.Value{reflect.ValueOf(context)}
-
-		for i := 1; i < methodType.NumIn(); i++ {
-			inputName := reflect.ValueOf(invokeRequest.Data).MapKeys()[i-1].String()
-			if rv, ok := invokeRequest.Data[inputName]; ok {
-				indirect := true
-				inputType := methodType.In(i)
-
-				if inputType.Kind() == reflect.Pointer {
-					indirect = false
-					inputType = inputType.Elem()
-				}
-
-				value := reflect.New(inputType)
-				err := json.Unmarshal(rv, value.Interface())
-				panicIf(err, "Unable to parse input parameter %s", inputName)
-
-				if indirect {
-					in = append(in, reflect.Indirect(value))
-				} else {
-					in = append(in, value)
-				}
-			}
-		}
-
-		// Invoke method
-		out := reflect.ValueOf(method).Call(in)
-
-		// Handle method outputs
-		var returnValue interface{} = nil
-		if len(out) > 0 {
-			v := out[0]
-			if v.Kind() == reflect.Pointer {
-				v = v.Elem()
-			}
-			returnValue = v.Interface()
-		}
-
-		// Build invoke response
-		invokeResponse := InvokeResponse{
-			Logs:        context.Logs,
-			Outputs:     context.Outputs,
-			ReturnValue: returnValue,
-		}
-
-		invokeResponse.encode(res)
+		// Invoke
+		response := invoke(request, fun)
+		response.encode(res)
 	}
 }
 

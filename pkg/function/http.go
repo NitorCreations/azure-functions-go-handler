@@ -66,12 +66,17 @@ func (h *HttpResponseHeaders) ContentTypeText() *HttpResponseHeaders {
 	return h.ContentType("text/plain")
 }
 
-var (
-	// HttpResponseHeaders with content type set to application/json
-	ContentTypeJson HttpResponseHeaders = *(&HttpResponseHeaders{}).ContentTypeJson()
-	// HttpResponseHeaders with content type set to text/plain
-	ContentTypeText HttpResponseHeaders = *(&HttpResponseHeaders{}).ContentTypeText()
-)
+func ContentTypeJson() HttpResponseHeaders {
+	headers := HttpResponseHeaders{}
+	headers.ContentTypeJson()
+	return headers
+}
+
+func ContentTypeText() HttpResponseHeaders {
+	headers := HttpResponseHeaders{}
+	headers.ContentTypeText()
+	return headers
+}
 
 // HttpResponse models the HttpTrigger out binding data.
 // All fields are optional. The default value for Status is 200.

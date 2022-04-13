@@ -2,22 +2,48 @@
 package main
 
 import (
+  _ "embed"
 	"net/http"
 
-{{- range $key, $val := .Imports }}
-	{{ $key }} "{{ $val }}"
+{{- range .Functions }}
+	{{ .Name }} "{{ .ImportPath }}"
 {{- end }}
+	"github.com/NitorCreations/azure-functions-go-handler/pkg/function"
 	"github.com/NitorCreations/azure-functions-go-handler/pkg/handler"
 )
+
+var (
+{{- range .Functions }}
+  //go:embed {{ .ConfigPath }}
+	{{ .Name }}Config []byte
+{{- end }}
+)
+
+var functions = make(map[string]*function.Function)
+
+func init() {
+{{- range .Functions }}
+  functions["{{ .Name }}"] = create(
+		{{ .Name }}Config, {{ .Reference }})
+{{- end }}
+}
+
+func create(data []byte, ref any) *function.Function {
+	config, err := function.NewConfig(data)
+	if err != nil {
+		panic(err)
+	}
+	function, err := function.NewFunction(config, ref)
+	if err != nil {
+		panic(err)
+	}
+	return function
+}
 
 func main() {
 	handler := &handler.Handler{
 		Debug: false,
-		Methods: map[string]interface{}{
-{{- range $key, $val := .Methods }}
-			"{{ $key }}": {{ $val }},
-{{- end }}
-		},
+		Functions: functions,
 	}
 
 	err := handler.Start()

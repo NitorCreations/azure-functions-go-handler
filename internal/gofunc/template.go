@@ -57,8 +57,14 @@ func LoadTemplates() error {
 }
 
 type HandlerVars struct {
-	Imports map[string]string
-	Methods map[string]string
+	Functions []*FunctionVars
+}
+
+type FunctionVars struct {
+	Name       string
+	Reference  string
+	ConfigPath string
+	ImportPath string
 }
 
 type ProjectVars struct {
@@ -67,8 +73,7 @@ type ProjectVars struct {
 
 func NewHandlerVars() *HandlerVars {
 	return &HandlerVars{
-		Imports: make(map[string]string),
-		Methods: make(map[string]string),
+		Functions: []*FunctionVars{},
 	}
 }
 
