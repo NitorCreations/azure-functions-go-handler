@@ -42,7 +42,10 @@ func (a *Argument) Allocate() error {
 }
 
 func (a *Argument) Read(in map[string]json.RawMessage) error {
-	a.Allocate() // make sure data is allocated
+	// make sure data is allocated
+	if err := a.Allocate(); err != nil {
+		return err
+	}
 
 	if data, ok := in[a.Name]; ok {
 		return json.Unmarshal(data, a.Value.Interface())

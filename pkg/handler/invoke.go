@@ -66,7 +66,8 @@ func invoke(request *InvokeRequest, fun *function.Function) *InvokeResponse {
 
 	// Handle function outputs
 	for _, arg := range out {
-		arg.Write(context.Outputs)
+		err := arg.Write(context.Outputs)
+		panicIf(err, "Failed to write output")
 	}
 
 	// Handle function return value
